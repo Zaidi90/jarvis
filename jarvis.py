@@ -7,17 +7,16 @@ import sys
 import webbrowser
 import os
 import smtplib
+import pyautogui 
 # import selenium    
-
 import time
-
 # Change the default encoding to 'utf-8'
 sys.stdout.reconfigure(encoding='utf-8')
 
 query = "your search term here"  # Replace with the actual query
 
 try:
-    results = wikipedia.summary(query, sentences=2)
+    results = wikipedia.summary(query, sentences=4)
     print(results)
 except DisambiguationError as e:
     print(f"Your search term '{query}' is ambiguous. It may refer to:")
@@ -85,8 +84,14 @@ if __name__ == "__main__":
         elif 'open youtube' in query:
             webbrowser.open("youtube.com")
             
+        elif 'open instagram' in query:
+            webbrowser.open("instagram.com")
+            
         elif 'open google' in query:
            webbrowser.open("google.com")
+           
+        elif 'open facebook' in query:
+           webbrowser.open("facebook.com")
             
         elif 'open stackoverflow' in query:
             webbrowser.open("stackoverflow.com")
@@ -114,34 +119,29 @@ if __name__ == "__main__":
                 speak("Email has been sent!")
             except Exception as e:
                 print(e)
-                speak("Sorry my friend Zaid bhai. I am not able to send this email");
-                
-#  def speak(audio):
-#     engine.say(audio)
-#     engine.runAndWait()
-#     def wishMe():
-                
-    
-# def open_and_close_tab():
-#     # Initialize the WebDriver (Replace 'path_to_driver' with your WebDriver's path)
-#    webbrowser = webbrowser.Chrome(executable_path='path_to_browser')
-    
-#     # Open a new tab
-#  webbrowser.open("Open a new tab")
-# print()
-#     # Wait for a few seconds to simulate work
-# time.sleep(5)
-    
-# webbrowser.close()
-# print("Tab closed")
+                speak("Sorry my friend Zaid bhai. I am not able to send this email")
+                # ... existing code ...
 
-# if __name__ == "__main__":
-#     open_and_close_tab()
-#     # Close the tab
+def close_tab():
+    speak("Closing the current tab")
     
-   
+    pyautogui.hotkey('ctrl', 'w')
 
+# Add this to your main command loop:
+if __name__ == "__main__":
+    wishMe()
+    while True:
+        query = takeCommand().lower()
 
+       
+elif 'close tab' in query:
+            close_tab()
+
+       
+
+elif 'exit' in query or 'close' in query or 'goodbye' in query:
+            speak("Goodbye sir, have a nice day!")
+            sys.exit()
 
         
        
