@@ -7,7 +7,7 @@ import sys
 import webbrowser
 import os
 import smtplib
-import pyautogui 
+# import pyautogui 
 # import selenium    
 import time
 # Change the default encoding to 'utf-8'
@@ -32,7 +32,7 @@ def speak(audio):
     engine.runAndWait()
 
 def wishMe():
-    hour = int(datetime).datetime.now().hour
+    hour = int(datetime.datetime.now().hour)
     if hour >= 0 and hour < 12:
         speak("Good Morning!")
     elif hour >= 12 and hour < 18:
@@ -120,28 +120,39 @@ if __name__ == "__main__":
             except Exception as e:
                 print(e)
                 speak("Sorry my friend Zaid bhai. I am not able to send this email")
-                # ... existing code ...
+    #             # ... existing code ...
 
-def close_tab():
-    speak("Closing the current tab")
+
+
+
+
+
+
+# def close_tab():
+#     speak("Closing the current tab")
     
-    pyautogui.hotkey('ctrl', 'w')
+#     pyautogui.hotkey('ctrl', 'w')
 
-# Add this to your main command loop:
-if __name__ == "__main__":
-    wishMe()
-    while True:
-        query = takeCommand().lower()
-
-       
-elif 'close tab' in query:
-            close_tab()
+# # Add this to your main command loop:
+# if __name__ == "__main__":
+#     wishMe()
+#     while True:
+#         query = takeCommand().lower()
 
        
+# elif 'close tab' in query:
+#             close_tab()
 
-elif 'exit' in query or 'close' in query or 'goodbye' in query:
-            speak("Goodbye sir, have a nice day!")
-            sys.exit()
+       
+
+# elif 'exit' in query or 'close' in query or 'goodbye' in query:
+#             speak("Goodbye sir, have a nice day!")
+#             sys.exit()
+
+
+   
+
+
 
         
        
