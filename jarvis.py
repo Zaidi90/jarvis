@@ -1,158 +1,165 @@
-from wikipedia.exceptions import DisambiguationError
-import pyttsx3 #pip install pyttsx3
-import speech_recognition as sr #pip install speechRecognition
 import datetime
-import wikipedia 
-import sys
-import webbrowser
+import pyttsx3
+import speech_recognition
+import requests
 import os
-import smtplib
-# import pyautogui 
-# import selenium    
-import time
-# Change the default encoding to 'utf-8'
-sys.stdout.reconfigure(encoding='utf-8')
+from  bs4 import BeautifulSoup
+import pyautogui
+import random
+import webbrowser
 
-query = "your search term here"  # Replace with the actual query
 
-try:
-    results = wikipedia.summary(query, sentences=4)
-    print(results)
-except DisambiguationError as e:
-    print(f"Your search term '{query}' is ambiguous. It may refer to:")
-    for option in e.options:
-        print(f"- {option}")
 
-engine = pyttsx3.init('sapi5')
-voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+engine = pyttsx3.init("sapi5")
+voices = engine.getProperty("voices")
+engine.setProperty("voice", voices[0].id)
+rate = engine.setProperty("rate",200)
 
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
 
-def wishMe():
-    hour = int(datetime.datetime.now().hour)
-    if hour >= 0 and hour < 12:
-        speak("Good Morning!")
-    elif hour >= 12 and hour < 18:
-        speak("Good Afternoon!")
-    else:
-        speak("Good Evening!")
-    speak("Assalamualikum I am Raodi Sir. Please tell me how may I help you")
-
 def takeCommand():
-    # It takes microphone input from the user and returns string output
-
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print("Listening...")
+    r = speech_recognition.Recognizer()
+    with speech_recognition.Microphone() as source:
+        print("Listening.....")
         r.pause_threshold = 1
-        audio = r.listen(source)
+        r.energy_threshold = 300
+        audio = r.listen(source,0,4)
 
     try:
-        print("Recognizing...")
-        query = r.recognize_google(audio, language='en-in')
-        print(f"User said: {query}\n")
+        print("Understanding..")
+        query  = r.recognize_google(audio,language='en-in')
+        print(f"You Said: {query}\n")
     except Exception as e:
-        print("Say that again please...")
+        print("Say that again")
         return "None"
     return query
 
-def sendEmail(to, content):
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.ehlo()
-    server.starttls()
-    server.login('youremail@gmail.com', 'your-password')
-    server.sendmail('youremail@gmail.com', to, content)
-    server.close()
-
+def alarm(query):
+    timehere = open("Alarmtext.txt","a")
+    timehere.write(query)
+    timehere.close()
+    os.startfile("alarm.py")
+    
 if __name__ == "__main__":
-    wishMe()
     while True:
         query = takeCommand().lower()
-
-        # Logic for executing tasks based on query
-        if 'wikipedia' in query:
-            speak('Searching Wikipedia...')
-            query = query.replace("wikipedia", "")
-            results = wikipedia.summary(query, sentences=10)
-            speak("According to Wikipedia")
-            print(results)
-            speak(results)
-
-        elif 'open youtube' in query:
-            webbrowser.open("youtube.com")
+        if "wake up" in query:
+            from GreetMe import greetMe
+            greetMe()
             
-        elif 'open instagram' in query:
-            webbrowser.open("instagram.com")
-            
-        elif 'open google' in query:
-           webbrowser.open("google.com")
-           
-        elif 'open facebook' in query:
-           webbrowser.open("facebook.com")
-            
-        elif 'open stackoverflow' in query:
-            webbrowser.open("stackoverflow.com")
+            while True:
+                query = takeCommand().lower()
+                if "go to sleep" in query:
+                    speak("Ok sir , You can call me anytime")
+                    break
+                
+                elif "hello" in query:
+                    speak("Hello sir, how are you ?")
+                elif "i am fine" in query:
+                    speak("that's great, sir")
+                elif "how are you" in query:
+                    speak("Perfect, sir")
+                elif "thank" in query:
+                    speak("you are welcome, sir")
+                    
+                    
+                elif "tired" in query:
+                    speak("Playing your favourite songs, sir")
+                    a = (1,2,3) # You can choose any number of songs (I have only choosen 3)
+                    b = random.choice(a)
+                    if b==1:
+                       kwebbrowser.open("https://www.youtube.com/results?search_query=safar+song")
+                
+                
+                
+                
+                elif "pause" in query:
+                    pyautogui.press("k")
+                    speak("video paused")
+                elif "play" in query:
+                    pyautogui.press("k")
+                    speak("video played")
+                elif "mute" in query:
+                     pyautogui.press("m")
+                     speak("video muted")
+                     
+                elif "volume up" in query:
+                     from keyboard import volumeup
+                     speak("Turning volume up,sir")
+                     volumeup()
+                    
+                elif "volume down" in query:
+                    from keyboard import volumedown
+                    speak("Turning volume down, sir")
+                    volumedown()
+                    
+                elif "open" in query:
+                    from Dictapp import openappweb
+                    openappweb(query)
+                elif "close" in query:
+                     from Dictapp import closeappweb
+                     closeappweb(query)
+                                  
+                elif "google" in query:
+                    from SearchNow import searchGoogle
+                    searchGoogle(query)
+                elif "youtube" in query:
+                    from SearchNow import searchYoutube
+                    searchYoutube(query)
+                elif "wikipedia" in query:
+                    from SearchNow import searchWikipedia
+                    searchWikipedia(query) 
+                    
+                     
+                elif "temperature" in query:
+                   search = "temperature in karachi"
+                   url = f"https://www.google.com/search?q={search}"
+                   r  = requests.get(url)
+                   data = BeautifulSoup(r.text,"html.parser")
+                   temp = data.find("div", class_ = "BNeawe").text
+                   speak(f"current{search} is {temp}")
+                elif "weather" in query:
+                   search = "temperature in karachi"
+                   url = f"https://www.google.com/search?q={search}"
+                   r  = requests.get(url)
+                   data = BeautifulSoup(r.text,"html.parser")
+                   temp = data.find("div", class_ = "BNeawe").text
+                   speak(f"current{search} is {temp}")
+                   
+                
+                elif "set an alarm" in query:
+                    print("input time example:- 10 and 10 and 10")
+                    speak("Set the time")
+                    a = input("Please tell the time :- ")
+                    alarm(a)
+                    speak("Done,sir")
 
-        elif 'play music' in query:
-            music_dir = 'D:\\Non Critical\\songs\\Favorite Songs2'
-            songs = os.listdir(music_dir)
-            print(songs)
-            os.startfile(os.path.join(music_dir, songs[0]))
+                   
+                elif "the time" in query:
+                    strTime = datetime.datetime.now().strftime("%H:%M:%S")
+                    speak(f"Sir, the time is {strTime}")
+                    
+                elif "finally sleep" in query:
+                    speak("Going to sleep,sir")
+                    exit()
+                
+                elif "remember that" in query:
+                    rememberMessage = query.replace("remember that","")
+                    rememberMessage = query.replace("jarvis","")
+                    speak("You told me to"+rememberMessage)
+                    remember = open("Remember.txt","a")
+                    remember.write(rememberMessage)
+                    remember.close()
+                elif "what do you remember" in query:
+                    remember = open("Remember.txt","r")
+                    speak("You told me to" + remember.read())
 
-        elif 'the time' in query:
-            strTime = datetime.datetime.now().strftime("%H:%M:%S")
-            speak(f"Sir, the time is {strTime}")
-
-        elif 'open code' in query:
-            codePath = "C:\\Users\\Zaidis\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
-            os.startfile(codePath)
-
-        elif 'email to Zaid' in query:
-            try:
-                speak("What should I say?")
-                content = takeCommand()
-                to = "Zaid yourEmail@gmail.com"
-                sendEmail(to, content)
-                speak("Email has been sent!")
-            except Exception as e:
-                print(e)
-                speak("Sorry my friend Zaid bhai. I am not able to send this email")
-    #             # ... existing code ...
-
-
-
-
-
-
-
-# def close_tab():
-#     speak("Closing the current tab")
+                      
     
-#     pyautogui.hotkey('ctrl', 'w')
-
-# # Add this to your main command loop:
-# if __name__ == "__main__":
-#     wishMe()
-#     while True:
-#         query = takeCommand().lower()
-
-       
-# elif 'close tab' in query:
-#             close_tab()
-
-       
-
-# elif 'exit' in query or 'close' in query or 'goodbye' in query:
-#             speak("Goodbye sir, have a nice day!")
-#             sys.exit()
 
 
-   
+    
+                     
 
-
-
-        
-       
